@@ -12,7 +12,7 @@ class Afk(commands.Cog):
         if not message.author.bot:
             c = await self.bot.afk.find_one({"_id": message.author.id})
             if c is not None:
-                await message.reply(f"Welcome back {message.author}! I have removed yoru afk!")
+                await message.reply(f"Welcome back {message.author.name}! I have removed yoru afk!")
                 await self.bot.afk.delete_one({"_id": message.author.id})
             else:
                 for member in message.mentions:
@@ -34,13 +34,20 @@ class Afk(commands.Cog):
                 pass
             await ctx.reply(f"Set your AFK status - **{message}**")
             await asyncio.sleep(10)
-            await self.bot.afk.insert_one(
-                {
+            data = {
                     "_id": ctx.author.id,
                     "message": message,
                     "start": discord.utils.utcnow()
-                }
-            )
+            }
+            try:
+                await self.bot.afk.insert_one(
+                    data
+                )
+            except:
+                await self.bot.afk.update_one(
+                    {"_id": ctx.author.id}, {"$set": data}
+                )
+                
 
     @afk.command(name = "remove")
     @has_permissions(administrator = True)
