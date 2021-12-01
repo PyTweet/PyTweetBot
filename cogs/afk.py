@@ -12,8 +12,13 @@ class Afk(commands.Cog):
         if not message.author.bot:
             c = await self.bot.afk.find_one({"_id": message.author.id})
             if c is not None:
-                await message.reply(f"Welcome back {message.author.name}! I have removed yoru afk!")
+                await message.reply(f"Welcome back {message.author.name}! I have removed your afk!")
                 await self.bot.afk.delete_one({"_id": message.author.id})
+                if "[AFK]" in message.author.nick:
+                    try:
+                        message.author.edit(nick = message.author.nick.replace("[AFK]"))
+                    except:
+                        pass
             else:
                 for member in message.mentions:
                     check = await self.bot.afk.find_one({"_id": member.id})

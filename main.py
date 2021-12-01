@@ -31,6 +31,9 @@ class Bot(commands.Bot):
         self.afk = self.mongo["afk"]["afk"]
 
         self.load_exts()
+        self.loop.create_task(
+            webserver.app.run_task(host = "0.0.0.0")
+        )
 
     def load_exts(self):
         self.load_extension("cogs.tags")
@@ -58,5 +61,4 @@ os.environ["JISHAKU_USE_EMBEDS"] = "1"
 # Initialize da bot
 bot = Bot()
 
-webserver.start()
 bot.run(bot.token)

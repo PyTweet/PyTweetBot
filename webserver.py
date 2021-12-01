@@ -1,15 +1,7 @@
-from flask import Flask
-from threading import Thread
+from quart import Quart
 
-app = Flask("webserver")
+app = Quart("webserver")
 
 @app.route("/")
-def home():
+async def home():
     return "Hi!"
-
-def run():
-    app.run(host = "0.0.0.0")
-
-def start():
-    thread = Thread(target = run)
-    thread.start()
