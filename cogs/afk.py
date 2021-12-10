@@ -14,11 +14,13 @@ class Afk(commands.Cog):
             if c is not None:
                 await message.reply(f"Welcome back {message.author.name}! I have removed your afk!")
                 await self.bot.afk.delete_one({"_id": message.author.id})
-                if "[AFK]" in message.author.nick:
-                    try:
-                        message.author.edit(nick = message.author.nick.replace("[AFK]"))
-                    except:
-                        pass
+                if isinstance(message.author.nick, str):
+                    if message.author.nick:
+                        try:
+                            message.author.edit(
+                                nick = message.author.nick.replace("[AFK]"))
+                        except commands.BotMissingPermissions:
+                            pass
             else:
                 for member in message.mentions:
                     check = await self.bot.afk.find_one({"_id": member.id})
@@ -64,12 +66,14 @@ class Afk(commands.Cog):
             return await ctx.send(f"{member} is not afk!")
 
         await self.bot.afk.delete_one(u)
-        try:
-            await member.edit(
-                nick = f"{member.display_name}".replace("[AFK] ", "")
-            )
-        except:
-            pass
+        if isinstance(member.nick, str):
+            if member.nick.startswith("[AFK]"):
+                try:
+                    await member.edit(
+                        nick = f"{member.nick[5:]}"
+                    )
+                except commands.BotMissingPermissions:
+                    pass
         await ctx.send(f"Removed **{member.display_name}**'s AFK!")
 
 def setup(bot):
