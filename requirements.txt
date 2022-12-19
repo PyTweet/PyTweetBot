@@ -1,5 +1,2 @@
-git+https://github.com/Pycord-Development/Pycord
-git+https://github.com/Sengolda/jishkucord
-motor
-dnspython
-quart
+py-cord==2.0.0b5
+git+https://github.com/Gorialis/jishaku

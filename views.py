@@ -1,19 +1,25 @@
 import discord
+import typing
+from discord.ext import commands
 
 class Paginator(discord.ui.View):
-    def __init__(self, paginator, author, **kwargs):
+    def __init__(self, paginator, context: commands.Context, **kwargs):
         super().__init__(
             timeout = 30
         )
         self.paginator: discord.ext.commands.Paginator = paginator
-        self.author = author
-        self.pages = len(paginator.pages)
-        self.page = 1
-        self._embed = discord.Embed(colour = discord.Color.red())
-        self.embed: discord.Embed = kwargs.pop("embed", self._embed)
+        self.context: commands.Context = context
+        self.author: typing.Union[discord.User, discord.Member] = context.author
+        self.pages: int = len(paginator.pages)
+        self.page: int = 1
+        _embed = discord.Embed(colour = discord.Color.red())
+        self.embed: discord.Embed = kwargs.pop("embed", _embed)
+        self._original_embed_title = self.embed.title
+        self.embed.title = f"{self._original_embed_title} [{self.page}/{self.pages}]"
 
     async def update_message(self, interaction):
         self.page_number.label = self.page
+        self.embed.title = f'{self._original_embed_title} [{self.page}/{self.pages}]'
         self.embed.description = self.paginator.pages[self.page - 1]
         await interaction.message.edit(embed = self.embed, view = self)
 

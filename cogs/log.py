@@ -5,6 +5,7 @@ from discord.ext import commands
 class Log(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.session: aiohttp.ClientSession = bot.session
         self.log_webhook = self.bot.log_webook
 
     @commands.Cog.listener()
@@ -21,17 +22,12 @@ class Log(commands.Cog):
                 """
             }
 
-            payload = {
-                "embeds": [
-                    embed
-                ]
-            }
+            payload = {"embeds": [embed]}
 
-            async with aiohttp.ClientSession() as session:
-                await session.post(
-                    url = self.log_webhook,
-                    json = payload
-                )
+            await self.session.post(
+                url = self.log_webhook,
+                json = payload
+            )
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -55,11 +51,17 @@ class Log(commands.Cog):
                 ]
             }
 
-            async with aiohttp.ClientSession() as session:
-                await session.post(
-                    url = self.log_webhook,
-                    json = payload
-                )
+            await self.session.post(
+                url = self.log_webhook,
+                json = payload
+            )
+
+    @commands.Cog.listener()
+    async def on_message_delete(self, msg: discord.Message):
+        if not msg.author.bot:
+            self.bot.del_snipe.append(msg)
+            if len(self.bot.del_snipe) > 10:
+                self.bot.del_snipe[1:]
 
 def setup(bot):
     bot.add_cog(Log(bot))

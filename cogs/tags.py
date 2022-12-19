@@ -55,7 +55,7 @@ class Tags(commands.Cog):
         
         t["content"] = content
         await self.tags.update_one({"name": name}, {"$set": t})
-        await ctx.send(f"Editted {name}!")
+        await ctx.send(f"Edited {name}!")
 
     @_tag.command(name = "delete", aliases = ["d"])
     async def delete(self, ctx, name: str):
@@ -72,7 +72,7 @@ class Tags(commands.Cog):
 
     @_tag.command(name = "list")
     async def _list(self, ctx):
-        pag = commands.Paginator(prefix = "", suffix = "", max_size = 1000)
+        pag = commands.Paginator(prefix = "", suffix = "", max_size = 500)
         tags = self.tags.find({})
 
         async for tag in tags:
@@ -91,7 +91,7 @@ class Tags(commands.Cog):
             )
         except:
             return await ctx.send("There are no tags!")
-        pag_view = views.Paginator(pag, ctx.author, embed = embed)
+        pag_view = views.Paginator(pag, ctx, embed = embed)
         embed.set_footer(text = f"Requested by {ctx.author}", icon_url = ctx.author.display_avatar.url)
         await ctx.send(embed = embed, view = pag_view)
 

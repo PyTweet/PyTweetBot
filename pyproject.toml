@@ -6,6 +6,10 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+quart = "^0.16.2"
+motor = "^2.5.1"
+dnspython = "^2.1.0"
+humanize = "^3.13.1"
 
 [tool.poetry.dev-dependencies]
 
