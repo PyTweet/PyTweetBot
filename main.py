@@ -7,19 +7,20 @@ import aiohttp
 import traceback
 import asyncio
 
+
 class Bot(commands.Bot):
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(
-            users = True, everyone = False, roles = False, replied_user = True
+            users=True, everyone=False, roles=False, replied_user=True
         )
         super().__init__(
-            command_prefix = "t!",
-            intents = discord.Intents.all(),
-            allowed_mentions = allowed_mentions,
-            case_insensitive = True,
-            strip_after_prefix = True,
-            max_messages = 100,
-            owner_ids = [859996173943177226, 685082846993317953, 739443421202087966]
+            command_prefix="t!",
+            intents=discord.Intents.all(),
+            allowed_mentions=allowed_mentions,
+            case_insensitive=True,
+            strip_after_prefix=True,
+            max_messages=100,
+            owner_ids=[859996173943177226, 685082846993317953, 739443421202087966],
         )
 
         self.token = os.environ["token"]
@@ -51,12 +52,8 @@ class Bot(commands.Bot):
 
         self.load_exts()
         self.loop.create_task(
-            webserver.app.run_task(
-                host = "0.0.0.0",
-                use_reloader = False
-            ) 
+            webserver.app.run_task(host="0.0.0.0", use_reloader=False)
         )
-
 
     async def on_ready(self):
         await self.get_cog("Afk").update_cache()
@@ -72,15 +69,12 @@ class Bot(commands.Bot):
             return await ctx.send("That command doesn't exist!")
         else:
             err = "".join(
-                    traceback.format_exception(
-                    etype = type(error),
-                    value = error,
-                    tb = error.__traceback__
+                traceback.format_exception(
+                    etype=type(error), value=error, tb=error.__traceback__
                 )
             )
-            await ctx.send(
-                f"An error occured!\n```{err}```"
-            )
+            await ctx.send(f"An error occured!\n```{err}```")
+
 
 # Jishaku config
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
@@ -90,4 +84,4 @@ os.environ["JISHAKU_USE_EMBEDS"] = "1"
 bot = Bot()
 
 #  Run our botto
-bot.run(bot.token, reconnect = True)
+bot.run(bot.token, reconnect=True)
